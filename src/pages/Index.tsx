@@ -9,12 +9,15 @@ const Index = () => {
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
           Local Python app that uses your webcam and image captioning to detect shops and say “This is a shop.”
         </p>
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-wrap gap-3">
           <a href="/python-shop-detector/README.md">
             <Button size="lg">Open Setup Guide</Button>
           </a>
           <a href="/python-shop-detector/detect_shop.py">
             <Button variant="secondary" size="lg">View Script</Button>
+          </a>
+          <a href="/is-this-a-shop">
+            <Button variant="outline" size="lg">Try Website Upload</Button>
           </a>
         </div>
       </header>

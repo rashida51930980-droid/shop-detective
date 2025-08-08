@@ -76,6 +76,20 @@ python detect_shop.py --keywords "shop,store,market,supermarket,pharmacy"
 - First run may be slow while downloading the model.
 - CPU-only is supported by default. If you have a GPU and a proper PyTorch install, the script will detect it automatically.
 
+## Web API (for the website UI)
+Run a local API server that the React website calls:
+
+```bash
+# From python-shop-detector/
+uvicorn server:app --host 127.0.0.1 --port 8000
+```
+
+- Endpoint: `POST /detect` with form-data field `file` (image)
+- Response: `{ caption, is_shop, score, pun }`
+- CORS is enabled for `http://localhost:5173`
+
+Then open the web UI at `/is-this-a-shop` and upload an image.
+
 ## Uninstall
 ```bash
 deactivate  # if you used a venv

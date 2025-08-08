@@ -7,5 +7,9 @@ transformers>=4.43
 pillow>=10.3
 # Offline text-to-speech
 pyttsx3>=2.90
+# Web API (local, optional)
+fastapi>=0.111
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
 # Utils
 numpy>=1.26
