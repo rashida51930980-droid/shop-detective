@@ -132,8 +132,9 @@ def draw_hud(frame: np.ndarray, caption: str, status: str):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Webcam Shop Detector (Captioning + TTS)")
+    parser = argparse.ArgumentParser(description="Shop Detector (Image/Webcam, Captioning + TTS)")
     parser.add_argument("--camera", type=int, default=0, help="Webcam index (default: 0)")
+    parser.add_argument("--image", type=str, default=None, help="Path to an image file to analyze (skips webcam)")
     parser.add_argument("--cooldown", type=float, default=10.0, help="Seconds after speaking before it can repeat (default: 10)")
     parser.add_argument("--interval", type=float, default=2.0, help="Seconds between AI inferences (default: 2)")
     parser.add_argument("--keywords", type=str, default=",".join(DEFAULT_KEYWORDS), help="Comma-separated shop keywords override")
@@ -147,6 +148,44 @@ def main():
     captioner = build_captioner()
     speaker = Speaker()
 
+    # Single image mode
+    if args.image:
+        img_bgr = cv2.imread(args.image)
+        if img_bgr is None:
+            print(f"[Error] Could not read image at '{args.image}'.")
+            speaker.close()
+            return
+
+        caption_text = ""
+        try:
+            out = captioner(bgr_to_pil(img_bgr))
+            if isinstance(out, list) and out:
+                caption_text = out[0].get("generated_text", "")
+            else:
+                caption_text = ""
+        except Exception as e:
+            caption_text = "<captioning error>"
+            print(f"[Model] Inference error: {e}")
+
+        is_shop = bool(caption_text) and contains_shop_word(caption_text, keywords)
+        status = "DETECTED SHOP" if is_shop else "NOT DETECTED"
+        print(f"[Image] Caption='{caption_text}' -> {status}")
+
+        if is_shop:
+            speaker.say(args.say)
+
+        if not args.no_window:
+            disp = img_bgr.copy()
+            draw_hud(disp, caption_text, status)
+            cv2.imshow("Shop Detector (image)", disp)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
+        time.sleep(0.25)  # allow TTS queue to start
+        speaker.close()
+        return
+
+    # Webcam mode
     cap = cv2.VideoCapture(args.camera)
     if not cap.isOpened():
         print(f"[Error] Could not open camera index {args.camera}.")
@@ -188,6 +227,7 @@ def main():
                         speaker.say(args.say)
                         last_spoken = now
                         print(f"[Detect] SHOP detected. Caption='{caption_text}' -> Speaking: '{args.say}'")
+                        status = "DETECTED SHOP"
                     else:
                         wait_left = int(args.cooldown - (now - last_spoken))
                         status = f"DETECTED (cooldown {wait_left}s)"

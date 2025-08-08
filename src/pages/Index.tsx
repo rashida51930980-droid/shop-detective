@@ -38,12 +38,23 @@ pip install -r requirements.txt`}</code>
 
           <Card>
             <CardHeader>
-              <CardTitle>Run</CardTitle>
+              <CardTitle>Run (Webcam)</CardTitle>
             </CardHeader>
             <CardContent>
               <pre className="rounded-md bg-muted p-4 overflow-x-auto text-sm">
                 <code>{`python detect_shop.py --cooldown 10 --interval 2 --camera 0
 # Press q to quit`}</code>
+              </pre>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Run (Single Image)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <pre className="rounded-md bg-muted p-4 overflow-x-auto text-sm">
+                <code>{`python detect_shop.py --image path/to/photo.jpg`}</code>
               </pre>
             </CardContent>
           </Card>
