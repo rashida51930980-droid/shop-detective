@@ -1,0 +1,11 @@
+opencv-python>=4.9.0.80
+# Core ML stack
+torch>=2.3,<3.0
+torchvision>=0.18,<1.0
+transformers>=4.43
+# Imaging
+pillow>=10.3
+# Offline text-to-speech
+pyttsx3>=2.90
+# Utils
+numpy>=1.26
